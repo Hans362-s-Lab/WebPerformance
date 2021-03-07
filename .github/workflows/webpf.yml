@@ -29,7 +29,7 @@ jobs:
           APIKEY: ${{ secrets.APIKEY }}
           URL: ${{ secrets.URL }}
         run: |
-        	npm i
+          npm i
           node api/index.js
           mkdir public
           cp ./ct.json public/
