@@ -6,13 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
     <title>Web 性能报告 | Hans362 's Lab</title>
-    <link rel="shortcut icon" type="image/ico" href="https://cdn.jsdelivr.net/gh/hans362/image-hosting@master/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/gh/hans362/image-hosting@master/favicon-32x32.png">
+    <link rel="shortcut icon" type="image/ico"
+        href="https://cdn.jsdelivr.net/gh/hans362/image-hosting@master/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="https://cdn.jsdelivr.net/gh/hans362/image-hosting@master/favicon-32x32.png">
     <meta name="format-detection" content="telephone=no">
     <meta name="description" itemprop="description" content="Hans362 的博客性能报告">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@latest/dist/semantic.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@latest/dist/semantic.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/suka.css@0.1.2">
+    <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+    <script>eruda.init();</script>
     <style>
         .item-title {
             color: #adadad
@@ -42,10 +45,153 @@
         <i id="icon" class="server icon" data-position="left center" style="color: #4b5cc4;"></i>
         Web 性能报告
     </h1>
+
+    <h2 class="ui horizontal divider header"><i class="info icon"></i> 说明信息 </h2>
+    
+    <div class="ui container text">
+    该报告由 Hans362 's Lab 基于 Hans362 's Blog 的性能表现生成，各项指标通过 GTMetrix Restful API v1 获取，每日自动更新。
+    </div>
+    
+    <h2 class="ui horizontal divider header"><i class="clipboard check icon"></i> 综合得分 </h2>
     <div class="ui container sk-pt-4">
-        <div class="ui container two column stackable grid container" id="result">
+        <div class="ui two statistics">
+            <div class="statistic huge" id="yslowc">
+                <div class="value" id="yslow">0</div>
+                <div class="label">YSLOW得分 </div>
+            </div>
+            <div class="statistic huge" id="pgsc">
+                <div class="value" id="pgs">0</div>
+                <div class="label">PAGESPEED得分 </div>
+            </div>
         </div>
     </div>
+        
+    <h2 class="ui horizontal divider header"><i class="bar chart icon"></i> 详细报告 </h2>
+    <div class="ui container sk-pt-4">
+        <div class="ui four statistics">
+          <div class="large statistic">
+            <div class="value" id="fcp">
+              0
+            </div>
+            <div class="label">FCP用时 </div>
+          </div>
+          <div class="large statistic">
+            <div class="value" id="fp">
+              0
+            </div>
+            <div class="label">FP用时 </div>
+          </div>
+          <div class="large statistic">
+            <div class="value" id="dom">
+              0
+            </div>
+            <div class="label">DOM加载用时 </div>
+          </div>
+          <div class="large statistic">
+            <div class="value" id="domi">
+              0
+            </div>
+            <div class="label">DOM交互用时 </div>
+          </div>
+          <div class="large statistic">
+            <div class="value" id="pe">
+              0
+            </div>
+            <div class="label">页面元素数量 </div>
+          </div>
+          <div class="large statistic">
+            <div class="value" id="pgb">
+              0
+            </div>
+            <div class="label">页面字节数 </div>
+          </div>
+          <div class="large statistic">
+            <div class="value" id="pgt">
+              0
+            </div>
+            <div class="label">页面加载用时 </div>
+          </div>
+          <div class="large statistic">
+            <div class="value" id="hb">
+              0
+            </div>
+            <div class="label">HTML字节数 </div>
+          </div>
+          <div class="large statistic">
+            <div class="value" id="hl">
+              0
+            </div>
+            <div class="label">HTML加载用时 </div>
+          </div>
+          <div class="large statistic">
+            <div class="value" id="bt">
+              0
+            </div>
+            <div class="label">后端用时 </div>
+          </div>
+          <div class="large statistic">
+            <div class="value" id="cnt">
+              0
+            </div>
+            <div class="label">连接用时 </div>
+          </div>
+          <div class="large statistic">
+            <div class="value" id="ol">
+              0
+            </div>
+            <div class="label">加载用时 </div>
+          </div>
+          <div class="large statistic">
+            <div class="value" id="fl">
+              0
+            </div>
+            <div class="label">完整加载用时 </div>
+          </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@latest/dist/semantic.min.js"></script>
+    <script type="text/javascript">
+        function toThousands(num) {
+            return (num || 0).toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
+        }
+        var ctJson = "https://lab.hans362.cn/webpf/ct.json?" + new Date().getTime() + Math.random();
+        $.getJSON(ctJson, function (data) {
+            $("#ol").text(toThousands(data.results.onload_time)+'ms');
+            $("#fcp").text(toThousands(data.results.first_contentful_paint_time)+'ms');
+            $("#pe").text(toThousands(data.results.page_elements));
+            $("#fp").text(toThousands(data.results.first_paint_time)+'ms');
+            $("#dom").text(toThousands(data.results.dom_content_loaded_time)+'ms');
+            $("#domi").text(toThousands(data.results.dom_interactive_time)+'ms');
+            $("#pgb").text(toThousands(data.results.page_bytes));
+            $("#pgt").text(toThousands(data.results.page_load_time)+'ms');
+            $("#hb").text(toThousands(data.results.html_bytes));
+            $("#fl").text(toThousands(data.results.fully_loaded_time)+'ms');
+            $("#hl").text(toThousands(data.results.html_load_time)+'ms');
+            $("#yslow").text(toThousands(data.results.yslow_score));
+            $("#pgs").text(toThousands(data.results.pagespeed_score));
+            $("#bt").text(toThousands(data.results.backend_duration)+'ms');
+            $("#cnt").text(toThousands(data.results.connect_duration)+'ms');
+            if (data.results.pagespeed_score >= 90) {
+                  $("#pgsc").addClass('green');
+            } else if (data.results.pagespeed_score < 90 && data.results.pagespeed_score >= 60) {
+                  $("#pgsc").addClass('yellow');
+            } else if (data.results.pagespeed_score < 60 && data.results.pagespeed_score >= 30) {
+                  $("#pgsc").addClass('orange');
+            } else {
+                  $("#pgsc").addClass('red');
+            }
+            if (data.results.yslow_score >= 90) {
+                  $("#yslowc").addClass('green');
+            } else if (data.results.yslow_score < 90 && data.results.yslow_score >= 60) {
+                  $("#yslowc").addClass('yellow');
+            } else if (data.results.yslow_score < 60 && data.results.yslow_score >= 30) {
+                  $("#yslowc").addClass('orange');
+            } else {
+                  $("#yslowc").addClass('red');
+            }
+        });
+    </script>
 </body>
 
 </html>
