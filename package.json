@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "gtmetrix": "^1.3.0"
+  },
+  "name": "web-performance-page",
+  "description": "📈 Monitor your web performance using GTMetrics",
+  "version": "1.0.0",
+  "main": "api/index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hans362-s-Lab/WebPerformance.git"
+  },
+  "author": "Hans Yu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Hans362-s-Lab/WebPerformance/issues"
+  },
+  "homepage": "https://github.com/Hans362-s-Lab/WebPerformance#readme"
+}
