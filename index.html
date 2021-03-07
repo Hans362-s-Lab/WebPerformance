@@ -14,8 +14,8 @@
     <meta name="description" itemprop="description" content="Hans362 的博客性能报告">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@latest/dist/semantic.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/suka.css@0.1.2">
-    <script src="//cdn.jsdelivr.net/npm/eruda"></script>
-    <script>eruda.init();</script>
+    <!--<script src="//cdn.jsdelivr.net/npm/eruda"></script>
+    <script>eruda.init();</script>-->
     <style>
         .item-title {
             color: #adadad
@@ -30,6 +30,14 @@
         .ui.table tr td {
             padding: .3rem;
             line-height: 1.2rem;
+        }
+        
+        .ui.statistic>.value, .ui.statistics .statistic>.value {
+            text-transform: none;
+        }
+        
+        .ui.four.statistics .statistic {
+            margin: 0 0 2.4em;
         }
     </style>
     <!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3"></script><script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]-->
@@ -54,52 +62,58 @@
     
     <h2 class="ui horizontal divider header"><i class="clipboard check icon"></i> 综合得分 </h2>
     <div class="ui container sk-pt-4">
-        <div class="ui two statistics">
+        <div class="ui two large statistics">
             <div class="statistic huge" id="yslowc">
                 <div class="value" id="yslow">0</div>
-                <div class="label">YSLOW得分 </div>
+                <div class="label">YSLOW 得分 </div>
             </div>
             <div class="statistic huge" id="pgsc">
                 <div class="value" id="pgs">0</div>
-                <div class="label">PAGESPEED得分 </div>
+                <div class="label">PAGESPEED 得分 </div>
             </div>
         </div>
     </div>
         
     <h2 class="ui horizontal divider header"><i class="bar chart icon"></i> 详细报告 </h2>
     <div class="ui container sk-pt-4">
-        <div class="ui four statistics">
+        <div class="ui four small statistics">
           <div class="large statistic">
             <div class="value" id="fcp">
               0
             </div>
-            <div class="label">FCP用时 </div>
+            <div class="label">FCP 用时 </div>
           </div>
           <div class="large statistic">
             <div class="value" id="fp">
               0
             </div>
-            <div class="label">FP用时 </div>
+            <div class="label">FP 用时 </div>
           </div>
           <div class="large statistic">
             <div class="value" id="dom">
               0
             </div>
-            <div class="label">DOM加载用时 </div>
+            <div class="label">DOM 加载用时 </div>
           </div>
           <div class="large statistic">
             <div class="value" id="domi">
               0
             </div>
-            <div class="label">DOM交互用时 </div>
+            <div class="label">DOM 交互用时 </div>
           </div>
           <div class="large statistic">
+            <div class="value" id="spi">
+              0
+            </div>
+            <div class="label">首屏展现用时 </div>
+          </div>
+          <div class="large statistic blue">
             <div class="value" id="pe">
               0
             </div>
             <div class="label">页面元素数量 </div>
           </div>
-          <div class="large statistic">
+          <div class="large statistic blue">
             <div class="value" id="pgb">
               0
             </div>
@@ -111,17 +125,17 @@
             </div>
             <div class="label">页面加载用时 </div>
           </div>
-          <div class="large statistic">
+          <div class="large statistic blue">
             <div class="value" id="hb">
               0
             </div>
-            <div class="label">HTML字节数 </div>
+            <div class="label">HTML 字节数 </div>
           </div>
           <div class="large statistic">
             <div class="value" id="hl">
               0
             </div>
-            <div class="label">HTML加载用时 </div>
+            <div class="label">HTML 加载用时 </div>
           </div>
           <div class="large statistic">
             <div class="value" id="bt">
@@ -155,23 +169,48 @@
         function toThousands(num) {
             return (num || 0).toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
         }
-        var ctJson = "https://lab.hans362.cn/webpf/ct.json?" + new Date().getTime() + Math.random();
+        function toColor(num, threshold, item) {
+            var colorList = ['green','yellow','orange','red'];
+            var flag = 0;
+            for (var i=0; i<=2; i++) {
+                if (num <= threshold[i]) {
+                    $(item).parent().addClass(colorList[i]);
+                    flag = 1;
+                }
+            }
+            if (flag == 0) {
+                $(item).parent().addClass(colorList[3]);
+            }
+        }
+        var ctJson = "./ct.json?" + new Date().getTime() + Math.random();
         $.getJSON(ctJson, function (data) {
             $("#ol").text(toThousands(data.results.onload_time)+'ms');
+            toColor(data.results.onload_time,[1000,2000,3000],"#ol");
             $("#fcp").text(toThousands(data.results.first_contentful_paint_time)+'ms');
+            toColor(data.results.first_contentful_paint_time,[1000,2000,3000],"#fcp");
             $("#pe").text(toThousands(data.results.page_elements));
             $("#fp").text(toThousands(data.results.first_paint_time)+'ms');
+            toColor(data.results.first_paint_time,[1000,2000,3000],"#fp");
             $("#dom").text(toThousands(data.results.dom_content_loaded_time)+'ms');
+            toColor(data.results.dom_content_loaded_time,[1000,2000,3000],"#dom");
             $("#domi").text(toThousands(data.results.dom_interactive_time)+'ms');
+            toColor(data.results.dom_interactive_time,[1000,2000,3000],"#domi");
+            $("#spi").text(toThousands(data.results.rum_speed_index)+'ms');
+            toColor(data.results.rum_speed_index,[1000,2000,3000],"#spi");
             $("#pgb").text(toThousands(data.results.page_bytes));
             $("#pgt").text(toThousands(data.results.page_load_time)+'ms');
+            toColor(data.results.page_load_time,[1000,2000,3000],"#pgt");
             $("#hb").text(toThousands(data.results.html_bytes));
             $("#fl").text(toThousands(data.results.fully_loaded_time)+'ms');
+            toColor(data.results.fully_loaded_time,[1000,2000,3000],"#fl");
             $("#hl").text(toThousands(data.results.html_load_time)+'ms');
+            toColor(data.results.html_load_time,[1000,2000,3000],"#hl");
             $("#yslow").text(toThousands(data.results.yslow_score));
             $("#pgs").text(toThousands(data.results.pagespeed_score));
             $("#bt").text(toThousands(data.results.backend_duration)+'ms');
+            toColor(data.results.backend_duration,[500,1000,1500],"#bt");
             $("#cnt").text(toThousands(data.results.connect_duration)+'ms');
+            toColor(data.results.connect_duration,[500,1000,1500],"#cnt");
             if (data.results.pagespeed_score >= 90) {
                   $("#pgsc").addClass('green');
             } else if (data.results.pagespeed_score < 90 && data.results.pagespeed_score >= 60) {
