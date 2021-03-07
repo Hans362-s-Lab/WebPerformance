@@ -14,4 +14,4 @@ const testDetails = {
 
 gtmetrix.test.create(testDetails).then(data =>
     gtmetrix.test.get(data.test_id, 5000).then(data =>
-        fs.writeFile('ct.json', JSON.stringify(data.append()), console.log)));
+        fs.writeFile('ct.json', JSON.stringify(data), console.log)));
